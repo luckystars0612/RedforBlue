@@ -1,0 +1,39 @@
+title: Detect mshta.exe executing remote scriptlet for process creation
+id: 2
+status: test
+description: Detects execution of mshta.exe to execute a remote scriptlet file which launches executable file
+reference:
+  - https://www.ired.team/offensive-security/code-execution/t1170-mshta-code-execution
+author: Duan Tran Ngoc
+date: 2024-09-24
+modified: 2024-09-24
+tags:
+  - attack.execution
+  - attack.T1218.005
+  - attack.scripting
+  - attack.defense_evasion
+  - attack.t1059.007
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection:
+    Image: '*\mshta.exe'
+    CommandLine|contains|all:
+      - 'http://'
+    CommandLine|contains|any:
+      - '.sct'
+      - '.hta'
+  
+  condition: selection
+
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+
+falsepositives:
+  - Legitimate usage of mshta.exe (e.g., in admin scripts)
+
+level: high
