@@ -3,7 +3,7 @@ id: 1
 status: test
 description: Detects execution of regsvr32.exe to run a remote scriptlet file (.sct) via HTTP, a technique known as Squiblydoo for bypassing application whitelisting.
 reference:
-  - https://www.ired.team/offensive-security/code-execution/t1170-mshta-code-execution
+  - https://www.ired.team/offensive-security/code-execution/t1117-regsvr32-aka-squiblydoo
 author: Duan Tran Ngoc
 date: 2024-09-24
 modified: 2024-09-24

@@ -1,7 +1,7 @@
 title: Detect mshta.exe executing remote scriptlet for process creation
 id: 2
 status: test
-description: Detects execution of mshta.exe to execute a remote scriptlet file which launches executable file via WScript.Shell.
+description: Detects execution of mshta.exe to execute a remote scriptlet file which launches executable file
 reference:
   - https://www.ired.team/offensive-security/code-execution/t1170-mshta-code-execution
 author: Duan Tran Ngoc
