@@ -1,0 +1,31 @@
+title: MSBuild Execution with CSC Compiler
+id: 5
+status: experimental
+description: Detects the use of MSBuild spawning CSC.exe to compile and execute shellcode.
+reference:
+  - https://www.ired.team/offensive-security/code-execution/using-msbuild-to-execute-shellcode-in-c
+author: Duan Tran Ngoc
+date: 2024-09-25
+modified: 2024-09-25
+tags:
+  - attack.execution
+  - attack.t1127.001
+  - attack.t1059.004
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage: '*\\MSBuild.exe'
+    Image: '*\\csc.exe'
+  condition: selection
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+  - User
+  - ProcessGuid
+  - ParentProcessGuid
+falsepositives:
+  - Legitimate MSBuild and CSC.exe use in development environments
+level: high
