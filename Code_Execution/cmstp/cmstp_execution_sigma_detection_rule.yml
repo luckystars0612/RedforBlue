@@ -1,0 +1,31 @@
+title: CMSTP Code Execution Abuse
+id: 4
+description: Detect potential code execution via cmstp.exe using INF files.
+status: test
+reference:
+  - https://www.ired.team/offensive-security/code-execution/t1191-cmstp-code-execution
+author: Duan Tran Ngoc
+date: 2024-09-24
+modified: 2024-09-24
+tags:
+  - attack.t1191
+  - attack.defense_evasion
+  - attack.execution
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image: 'C:\Windows\System32\cmstp.exe'
+  condition:
+    CommandLine|contains:
+      - '/s'
+      - '.inf'
+      - 'ServiceProfile'
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+falsepositives:
+  - Legitimate usage of CMSTP for network connections
+level: high
