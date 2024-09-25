@@ -1,0 +1,35 @@
+title: Detect forfiles.exe Execution for File Operations
+id: 6
+status: test
+description: Detects execution of forfiles.exe, which may be used for malicious file operations such as bulk deletion or modification
+reference:
+  - https://www.ired.team/offensive-security/code-execution/t1202-forfiles-indirect-command-execution
+author: Duan Tran Ngoc
+date: 2024-09-25
+modified: 2024-09-25
+tags:
+  - attack.execution
+  - attack.t1071.001
+  - attack.defense_evasion
+  - attack.impact
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection:
+    Image: '*\forfiles.exe'
+    CommandLine|contains|any:
+      - '/C'
+      - '/c'
+  condition: selection
+
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+
+falsepositives:
+  - Legitimate use of forfiles.exe for file management or system administration tasks
+
+level: high
