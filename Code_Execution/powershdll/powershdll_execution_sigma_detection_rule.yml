@@ -1,0 +1,38 @@
+title: Detect running powershell.exe from PowerShdll.dll
+id: 8
+status: test
+description: Detects execution pf powershell without calling powershell.exe
+reference:
+  - https://www.ired.team/offensive-security/code-execution/powershell-without-powershell
+author: Duan Tran Ngoc
+date: 2024-09-27
+modified: 2024-09-27
+tags:
+  - attack.execution
+  - attack.scripting
+  - attack.defense_evasion
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection:
+    Image|contains|any:
+      - rundll32.exe
+      - installutil.exe
+      - regsvcs.exe
+      - regsvr32.exe
+    CommandLine|contains|any:
+      - 'PowerShdll'
+      - 'main'
+  condition: selection
+
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+
+falsepositives:
+  - Legitimate usage of rundll32.exe (e.g., in admin scripts)
+
+level: high
