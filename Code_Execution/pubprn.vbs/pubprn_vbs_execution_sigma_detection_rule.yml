@@ -1,0 +1,39 @@
+title: Detect cscript.exe executing remote scriptlet file for process creation
+id: 10
+status: test
+description: Detects execution of cscript.exe to execute a remote scriptlet file via pubprn.vbs
+reference:
+  - https://www.ired.team/offensive-security/code-execution/t1170-mshta-code-execution
+author: Duan Tran Ngoc
+date: 2024-09-27
+modified: 2024-09-27
+tags:
+  - attack.execution
+  - attack.T1216
+  - attack.scripting
+  - attack.defense_evasion
+  - attack.t1059.005
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection:
+    Image: '*\cscript.exe'
+    CommandLine|contains|all:
+      - 'pubprn.vbs'
+      - 'script:http://'
+    CommandLine|contains|any:
+      - '.sct'
+  
+  condition: selection
+
+fields:
+  - CommandLine
+  - ParentImage
+  - Image
+
+falsepositives:
+  - Legitimate usage of pubprn.vbs for printer management
+
+level: high
