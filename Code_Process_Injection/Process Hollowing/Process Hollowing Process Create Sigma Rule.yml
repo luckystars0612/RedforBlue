@@ -1,0 +1,44 @@
+title: Process Hollowing Process Create Event
+id: e8cbd6c4-7a59-46df-a1f1-f5d46415045d
+status: experimental
+description: Detects suspicious process hollowing activity by correlating with process access events
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-336a
+    - https://www.uptycs.com/blog/warzonerat-can-now-evade-with-process-hollowing
+    - https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/ransomware-double-extortion-and-beyond-revil-clop-and-conti
+    - https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+author: Leo Bastidas @cyberGoatPsyOps
+date: 2023/05/11
+tags:
+    - attack.t1055.012
+    - attack.defense_evasion
+    - attack.privilege_escalation
+logsource:
+    category: process_creation
+    product: windows
+    definition: Must have Sysmon installed. You can also use Sysmon Event 25 to correlate
+detection:
+    selection1:
+        ParentUser: # You correlate ParentUser to SourceUser from EventID 10
+    selection2:
+        ProcessGuid: # You correlate ProcessGuid to SourceProcessGuid from EventID 10
+    filter:
+        Image|endswith:
+            - 'wevtutil.exe'
+            - 'MicrosoftEdgeUpdate.exe'
+            - 'teams'
+        ParentImage|endswith: 
+            - 'apimonitor-x64.exe'
+    condition: all of selection* and not filter
+fields:
+    - UtcTime
+    - EventCode
+    - host
+    - ProcessId
+    - ParentProcessId
+    - Image
+    - ParentImage
+falsepositives:
+    - Legitimate administrative activities
+level: medium
+#https://trustedsec.com/blog/the-nightmare-of-proc-hollows-exe

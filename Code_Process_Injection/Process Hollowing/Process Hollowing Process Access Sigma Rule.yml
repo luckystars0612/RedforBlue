@@ -1,0 +1,48 @@
+title: Process Hollowing Process Access Event
+id: 8c73e59e-bf22-42b9-9022-bb20406acdda
+status: experimental
+description: Detects suspicious process hollowing activity by monitoring process access events and correlating with process create events
+references:
+    - https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-336a
+    - https://www.uptycs.com/blog/warzonerat-can-now-evade-with-process-hollowing
+    - https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/ransomware-double-extortion-and-beyond-revil-clop-and-conti
+    - https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+author: Leo Bastidas @cyberGoatPsyOps
+date: 2023/05/11
+tags:
+    - attack.t1055.012
+    - attack.defense_evasion
+    - attack.privilege_escalation
+logsource:
+    category: process_access
+    product: windows
+    definition: Must have Sysmon installed and correlate by matching SourceUser and SourceProcessGuid to Sysmon EID 1. You can also use Sysmon Event 25 to correlate
+
+detection:
+    selection:
+        GrantedAccess:
+            - 0x1FFFFF
+            - 0x1F3FFF
+        SourceUser: # Correlate with Sysmon EID 1 ParentUser field
+        SourceProcessGUID: # Correlate with Sysmon EID 1 ProcessGuid field
+    filter:
+        SourceImage|endswith:
+            - 'NGenTask.exe'
+            - 'WerFault.exe'
+            - 'Sysmon64.exe'
+            - 'apimonitor-x64.exe'
+            - 'MicrosoftEdgeUpdate.exe'
+    condition: selection and not filter
+fields:
+    - UtcTime
+    - EventCode
+    - host
+    - ProcessId
+    - ParentProcessId
+    - Image
+    - ParentImage
+falsepositives:
+    - Legitimate administrative activities
+level: medium
+level: medium
+# Ref: https://trustedsec.com/blog/the-nightmare-of-proc-hollows-exe

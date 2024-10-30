@@ -1,0 +1,14 @@
+(index=windows EventCode=10 GrantedAccess IN ("0x1FFFFF", "0x1F3FFF") AND NOT (SourceImage IN ("*NGenTask.exe", "*WerFault.exe", "*Sysmon64.exe", "*apimonitor-x64.exe", "*MicrosoftEdgeUpdate.exe","*git") OR (TargetImage IN ("*git.exe"))))
+| eval matchGUID=TargetProcessGUID
+| eval matchUser=SourceUser
+| append 
+    [ search (index=windows EventCode IN (1) AND NOT (Image IN ("*wevtutil.exe","*MicrosoftEdgeUpdate.exe", "*teams.exe","*git.exe") OR ParentImage IN ("*apimonitor-x64.exe","*git.exe*"))) | eval matchGUID=ParentProcessGuid | eval matchUser=ParentUser | stats values(*) as * by matchGUID, matchUser ]
+| append 
+    [ search (index=windows EventCode IN (25)) | rex field=Message "(?ims)(.*process\stampering.*image:\s(?<tamperedImage>.*\.\w{2,5}))" ]
+| eval image = mvappend('Image','SourceImage')
+| mvexpand image
+| eval processId = mvappend('ProcessId','SourceProcessId')
+| mvexpand processId
+| table UtcTime matchGUID, matchUser, tamperedImage, host, processId, ParentProcessId, TargetProcessId, image, ParentImage, TargetImage, GrantedAccess, CallTrace
+| dedup UtcTime
+| sort -UtcTime
