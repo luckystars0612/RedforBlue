@@ -1,5 +1,5 @@
 # Offensive and Defensive security
-This repo simulates some offensive attack and create custom sigma rule to detect it.
+This repo simulates some offensive attacks and some detect mechanisms.
 ***Note:***
 *- This repo is just for educational purpose, not for enterprise or production environment.*
 *- Repo code is based on [IREADTEAM notes](https://www.ired.team/).*
